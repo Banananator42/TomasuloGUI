@@ -44,7 +44,15 @@ public class ReservationStation {
   }
 
   public void snoop(CDB cdb) {
-    // TODO - add code to snoop on CDB each cycle
+      //check to see if either of the tags are on the CBB
+      if (cdb.dataTag == tag1 && !data1Valid) {
+          data1 = cdb.dataValue;
+          data1Valid = true;
+      }
+      if (cdb.dataTag == tag2 && !data2Valid) {
+          data2 = cdb.dataValue;
+          data2Valid = true;
+      }
   }
 
   public boolean isReady() {
@@ -52,6 +60,20 @@ public class ReservationStation {
   }
 
   public void loadInst(IssuedInst inst) {
-    // TODO add code to insert inst into reservation station
+      //either get the data or set the tag value depending on if the data is valid
+      if (inst.getRegSrc1Valid()) {
+          data1 = inst.getRegSrc1Value();
+          data1Valid = true;
+      }
+      else {
+          tag1 = inst.getRegSrc1Tag();
+      }
+      if (inst.getRegSrc2Valid()) {
+          data2 = inst.getRegSrc2Value();
+          data2Valid = true;
+      }
+      else {
+          tag2 = inst.getRegSrc2Tag();
+      }
   }
 }
