@@ -19,6 +19,9 @@ public class ReservationStation {
   int address;
   boolean predictedTaken = false;
 
+  //custom variables
+    boolean isSquashed = false;
+
   public ReservationStation(PipelineSimulator sim) {
     simulator = sim;
   }
@@ -75,5 +78,6 @@ public class ReservationStation {
       else {
           tag2 = inst.getRegSrc2Tag();
       }
+      function = inst.getOpcode();
   }
 }
