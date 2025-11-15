@@ -36,8 +36,8 @@ public abstract class FunctionalUnit {
   public void acceptIssue(IssuedInst inst) {
   // todo - fill in reservation station (if available) with data from inst
       //right now it naievely accepts a new instruction every time
-      stations[2] = stations[1];
-      stations[1].loadInst(inst);
+      stations[1] = stations[0];
+      stations[0].loadInst(inst);
   }
 
 }

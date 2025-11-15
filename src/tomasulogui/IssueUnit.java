@@ -33,7 +33,6 @@ public class IssueUnit {
 
         //first need to know what which FU it would go to
         int pc = simulator.getPC();
-        simulator.pc.incrPC();
         int instruction = simulator.getMemory().getIntDataAtAddr(pc);
         Instruction instr = Instruction.getInstructionFromOper(instruction);
         issuee = IssuedInst.createIssuedInst(instr);
@@ -66,18 +65,32 @@ public class IssueUnit {
             if (loadBuffer.isReservationStationAvail()) {
                 loadBuffer.acceptIssue(issuee);
             }
+            simulator.pc.incrPC();
         }
         else { //the fu must be a child of FunctionalUnit
             FunctionalUnit functionalUnit = (FunctionalUnit) fu;
 
             if (type == EXEC_TYPE.BRANCH) {
-                //this is where we would need to change the PC
+                BranchPredictor btb = simulator.getBTB();
+                btb.predictBranch(issuee); //this will change the PC either way
+            }
+            else {
+                simulator.pc.incrPC();
             }
 
             //send it to the ROB which also update some fields
             simulator.getROB().updateInstForIssue(issuee);
 
             //look for some forwarding
+            CDB cdb = simulator.getCDB();
+            if (issuee.getRegSrc1Tag() == cdb.getDataTag() && cdb.getDataValid()) {
+                issuee.setRegSrc1Value(cdb.getDataValue());
+                issuee.setRegSrc1Valid();
+            }
+            if (issuee.getRegSrc2Tag() == cdb.getDataTag() && cdb.getDataValid()) {
+                issuee.setRegSrc2Value(cdb.getDataValue());
+                issuee.setRegSrc2Valid();
+            }
 
             if (functionalUnit.isReservationStationAvail()) {
                 functionalUnit.acceptIssue(issuee);
