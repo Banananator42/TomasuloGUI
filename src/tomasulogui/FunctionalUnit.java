@@ -6,7 +6,6 @@ public abstract class FunctionalUnit {
   
   public FunctionalUnit(PipelineSimulator sim) {
     simulator = sim;
-    
   }
 
  
@@ -35,9 +34,19 @@ public abstract class FunctionalUnit {
 
   public void acceptIssue(IssuedInst inst) {
   // todo - fill in reservation station (if available) with data from inst
-      //right now it naievely accepts a new instruction every time
-      stations[1] = stations[0];
-      stations[0].loadInst(inst);
-  }
+      //Pretty much copied this over from LoadBuffer
+      int slot=0;
+      for (slot=0; slot < 2; slot++) {
+          if (stations[slot] == null) {
+              break;
+          }
+      }
+      if (slot == 2) {
+          throw new MIPSException("Loader accept issue: slot not available");
+      }
 
-}
+      ReservationStation entry = new ReservationStation(simulator);
+      stations[slot] = entry;
+      entry.loadInst (inst);
+      }
+  }
