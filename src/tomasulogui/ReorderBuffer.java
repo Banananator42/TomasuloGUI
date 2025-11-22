@@ -88,6 +88,7 @@ public class ReorderBuffer {
 
     if(isCDBValid) {
       buff[cdbTag].setWriteValue(cdbVal);
+      buff[cdbTag].complete = true;
   
       //probably need to check every ROB entry for SW data
       // for(int i = frontQ; i <= rearQ; i++) {
