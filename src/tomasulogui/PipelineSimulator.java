@@ -400,6 +400,7 @@ public class PipelineSimulator {
         cdb.setDataValid(false);
       }
 
+      reorder.readCDB(cdb);
       // hint: start with divider, and give it first chance of getting CDB
       
     }
