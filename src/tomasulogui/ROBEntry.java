@@ -85,18 +85,31 @@ public class ROBEntry {
       //        LOAD, STORE, HALT,
       //        NOP, BEQ, BNE, BLTZ, BLEZ, BGEZ, BGTZ, J, JAL, JR, JALR
 
-      //One-register instructions - need to verify that instructions need the first reg before doing this
-      if (rob.getTagForReg(reg1) != -1) {
-          inst.setRegSrc1Tag(rob.getTagForReg(reg1));
-      }
-      else {
-          inst.setRegSrc1Value(rob.getDataForReg(reg1));
-          inst.setRegSrc1Valid();
+      //One-register instructions
+      if (opcode == IssuedInst.INST_TYPE.ADD || opcode == IssuedInst.INST_TYPE.SUB ||
+              opcode == IssuedInst.INST_TYPE.AND || opcode == IssuedInst.INST_TYPE.BEQ ||
+              opcode == IssuedInst.INST_TYPE.OR || opcode == IssuedInst.INST_TYPE.XOR ||
+              opcode == IssuedInst.INST_TYPE.ADDI || opcode == IssuedInst.INST_TYPE.MUL ||
+              opcode == IssuedInst.INST_TYPE.DIV || opcode == IssuedInst.INST_TYPE.ANDI ||
+              opcode == IssuedInst.INST_TYPE.ORI || opcode == IssuedInst.INST_TYPE.XORI ||
+              opcode == IssuedInst.INST_TYPE.LOAD || opcode == IssuedInst.INST_TYPE.STORE ||
+              opcode == IssuedInst.INST_TYPE.BNE || opcode == IssuedInst.INST_TYPE.BLTZ ||
+              opcode == IssuedInst.INST_TYPE.BLEZ || opcode == IssuedInst.INST_TYPE.BGEZ ||
+              opcode == IssuedInst.INST_TYPE.BGTZ || opcode == IssuedInst.INST_TYPE.JR ||
+              opcode == IssuedInst.INST_TYPE.JALR) {
+          if (rob.getTagForReg(reg1) != -1) {
+              inst.setRegSrc1Tag(rob.getTagForReg(reg1));
+          } else {
+              inst.setRegSrc1Value(rob.getDataForReg(reg1));
+              inst.setRegSrc1Valid();
+          }
       }
 
       //Two-register instructions
-      if (opcode == IssuedInst.INST_TYPE.ADD || opcode == IssuedInst.INST_TYPE.SUB || opcode == IssuedInst.INST_TYPE.AND ||
-      opcode == IssuedInst.INST_TYPE.OR || opcode == IssuedInst.INST_TYPE.XOR) {
+      if (opcode == IssuedInst.INST_TYPE.ADD || opcode == IssuedInst.INST_TYPE.SUB ||
+              opcode == IssuedInst.INST_TYPE.AND || opcode == IssuedInst.INST_TYPE.OR ||
+              opcode == IssuedInst.INST_TYPE.XOR || opcode == IssuedInst.INST_TYPE.BEQ ||
+              opcode == IssuedInst.INST_TYPE.BNE) {
           if (rob.getTagForReg(reg2) != -1) {
               inst.setRegSrc2Tag(rob.getTagForReg(reg2));
           } else {
