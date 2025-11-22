@@ -396,7 +396,9 @@ public class PipelineSimulator {
         cdb.setDataValue(alu.writeBackVal);
         cdb.setDataValid(true);
       }
-      cdb.setDataValid(false);
+      else {
+        cdb.setDataValid(false);
+      }
 
       // hint: start with divider, and give it first chance of getting CDB
       
