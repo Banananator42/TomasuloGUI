@@ -13,10 +13,15 @@ public class ROBEntry {
   int writeValue = -1;
 
   IssuedInst.INST_TYPE opcode;
+  //IssuedInst.INST_CATEGORY type;
 
   public ROBEntry(ReorderBuffer buffer) {
     rob = buffer;
   }
+
+  //public IssuedInst.INST_CATEGORY getType() {
+  //    return type;
+  //  }
 
   public boolean isComplete() {
     return complete;
@@ -62,12 +67,53 @@ public class ROBEntry {
   public void copyInstData(IssuedInst inst, int frontQ) {
     instPC = inst.getPC();
     inst.setRegDestTag(frontQ);
+    frontQ = frontQ + 1; //I added this
 
     // TODO - This is a long and complicated method, probably the most complex
     // of the project.  It does 2 things:
     // 1. update the instruction, as shown in 2nd line of code above
     // 2. update the fields of the ROBEntry, as shown in the 1st line of code above
 
+      //First update the instruction
+      //Is the register stored as a tag right now, meaning someone is waiting to write to it?
+      int reg1 = inst.getRegSrc1();
+      int reg2 = inst.getRegSrc2();
+      int destReg = inst.getRegDest();
+      IssuedInst.INST_TYPE opcode = inst.getOpcode();
+
+      //ADD, ADDI, SUB, MUL, DIV, AND, ANDI, OR, ORI, XOR, XORI, SLL, SRL, SRA,
+      //        LOAD, STORE, HALT,
+      //        NOP, BEQ, BNE, BLTZ, BLEZ, BGEZ, BGTZ, J, JAL, JR, JALR
+
+      //One-register instructions - need to verify that instructions need the first reg before doing this
+      if (rob.getTagForReg(reg1) != -1) {
+          inst.setRegSrc1Tag(rob.getTagForReg(reg1));
+      }
+      else {
+          inst.setRegSrc1Value(rob.getDataForReg(reg1));
+          inst.setRegSrc1Valid();
+      }
+
+      //Two-register instructions
+      if (opcode == IssuedInst.INST_TYPE.ADD || opcode == IssuedInst.INST_TYPE.SUB || opcode == IssuedInst.INST_TYPE.AND ||
+      opcode == IssuedInst.INST_TYPE.OR || opcode == IssuedInst.INST_TYPE.XOR) {
+          if (rob.getTagForReg(reg2) != -1) {
+              inst.setRegSrc2Tag(rob.getTagForReg(reg2));
+          } else {
+              inst.setRegSrc2Value(rob.getDataForReg(reg2));
+              inst.setRegSrc2Valid();
+          }
+      }
+
+      //Immediate instructions
+      if (inst.type == IssuedInst.INST_CATEGORY.I_TYPE) {
+          inst.setRegSrc2Value(inst.getImmediate());
+          inst.setRegSrc2Valid();
+      }
+
+      //Then update the ROBEntry
+      writeReg = destReg;
+      //type = inst.getType();
   }
 
 }

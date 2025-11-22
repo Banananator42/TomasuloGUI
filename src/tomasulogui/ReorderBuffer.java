@@ -57,6 +57,15 @@ public class ReorderBuffer {
     // TODO - this is where you look at the type of instruction and
     // figure out how to retire it properly
 
+      if (retiree.isComplete()) {
+          int wbReg = retiree.getWriteReg();
+          int wbVal = retiree.getWriteValue();
+          regs.setReg(wbReg, wbVal);
+      }
+      else {
+          shouldAdvance = false;
+      }
+
       // if mispredict branch, won't do normal advance
       if (shouldAdvance) {
         numRetirees++;

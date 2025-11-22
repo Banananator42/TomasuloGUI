@@ -6,7 +6,12 @@ public class IssuedInst {
         LOAD, STORE, HALT,
         NOP, BEQ, BNE, BLTZ, BLEZ, BGEZ, BGTZ, J, JAL, JR, JALR} ;
 
+  public enum INST_CATEGORY {
+      I_TYPE, J_TYPE, R_TYPE
+  }
+
     INST_TYPE opcode;
+  INST_CATEGORY type;
     int pc = -1;
 
     int regDest = -1;
@@ -36,6 +41,10 @@ public class IssuedInst {
 
     public INST_TYPE getOpcode() {
       return opcode;
+    }
+
+    public INST_CATEGORY getType() {
+        return type;
     }
 
     public int getRegSrc1() {
@@ -149,12 +158,15 @@ public class IssuedInst {
 
       if (inst instanceof ITypeInst) {
         issued.decodeIType( (ITypeInst) inst);
+        issued.type = INST_CATEGORY.I_TYPE;
       }
       else if (inst instanceof JTypeInst) {
         issued.decodeJType( (JTypeInst) inst);
+          issued.type = INST_CATEGORY.J_TYPE;
       }
       else if (inst instanceof RTypeInst) {
         issued.decodeRType( (RTypeInst) inst);
+          issued.type = INST_CATEGORY.R_TYPE;
       }
 
       return issued;

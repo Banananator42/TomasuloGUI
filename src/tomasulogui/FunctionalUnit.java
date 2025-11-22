@@ -47,6 +47,6 @@ public abstract class FunctionalUnit {
 
       ReservationStation entry = new ReservationStation(simulator);
       stations[slot] = entry;
-      entry.loadInst (inst);
+      entry.loadInst(inst);
       }
   }
