@@ -82,6 +82,19 @@ public class ReorderBuffer {
     // could be store address source
 
     // TODO body of method
+    int cdbTag = cdb.getDataTag();
+    int cdbVal = cdb.getDataValue();
+    boolean isCDBValid = cdb.getDataValid();
+
+    if(isCDBValid) {
+      buff[cdbTag].setWriteValue(cdbVal);
+  
+      //probably need to check every ROB entry for SW data
+      // for(int i = frontQ; i <= rearQ; i++) {
+      //   if(buff[i].getWriteValue()
+      // }
+    }
+    
   }
 
   public void updateInstForIssue(IssuedInst inst) {

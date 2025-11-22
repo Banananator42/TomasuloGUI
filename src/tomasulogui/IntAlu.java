@@ -2,6 +2,10 @@ package tomasulogui;
 
 public class IntAlu extends FunctionalUnit{
   public static final int EXEC_CYCLES = 1;
+  int writeBackVal = -1; 
+  int writeBackTag = -1;
+  boolean requestWriteback = false;
+
 
   public IntAlu(PipelineSimulator sim) {
     super(sim);
@@ -24,6 +28,9 @@ public class IntAlu extends FunctionalUnit{
         case SRL -> result = data1 >>> data2;
         case SRA -> result = data1 >> data2;
     }
+    writeBackVal = result;
+    requestWriteback = true;
+    writeBackTag = stations[station].destTag;
     return result;
   }
 

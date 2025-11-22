@@ -21,6 +21,12 @@ public abstract class FunctionalUnit {
 
   public void execCycle(CDB cdb) {
     //todo - start executing, ask for CDB, etc.
+    //PROBLEM should we always compute the first reservation station?
+    for (int i = 0; i < 2; i++) {
+      if (stations[i].data1Valid && stations[i].data2Valid) {
+        calculateResult(i);
+      }
+    } 
   }
 
     public boolean isReservationStationAvail() { //modeled after method in LoadBuffer

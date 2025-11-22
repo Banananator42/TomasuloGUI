@@ -47,7 +47,7 @@ public class ReservationStation {
   }
 
   public void snoop(CDB cdb) {
-      //check to see if either of the tags are on the CBB
+      //check to see if either of the tags are on the CDB
       if (cdb.dataTag == tag1 && !data1Valid) {
           data1 = cdb.dataValue;
           data1Valid = true;
