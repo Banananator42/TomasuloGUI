@@ -79,5 +79,6 @@ public class ReservationStation {
           tag2 = inst.getRegSrc2Tag();
       }
       function = inst.getOpcode();
+      destTag = inst.getRegDestTag();
   }
 }

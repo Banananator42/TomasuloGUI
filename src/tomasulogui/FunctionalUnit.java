@@ -3,6 +3,11 @@ package tomasulogui;
 public abstract class FunctionalUnit {
   PipelineSimulator simulator;
   ReservationStation[] stations = new ReservationStation[2];
+
+    int writeBackVal = -1;
+    int writeBackTag = -1;
+    boolean requestWriteback = false;
+    int writeBackStation = -1;
   
   public FunctionalUnit(PipelineSimulator sim) {
     simulator = sim;
@@ -24,7 +29,10 @@ public abstract class FunctionalUnit {
     //PROBLEM should we always compute the first reservation station?
     for (int i = 0; i < 2; i++) {
       if (stations[i] != null && stations[i].data1Valid && stations[i].data2Valid) {
-        calculateResult(i);
+          writeBackVal = calculateResult(i);
+          requestWriteback = true;
+          writeBackTag = stations[i].destTag;
+          writeBackStation = i;
       }
     } 
   }

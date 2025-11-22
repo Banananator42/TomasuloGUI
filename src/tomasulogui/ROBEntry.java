@@ -67,7 +67,6 @@ public class ROBEntry {
   public void copyInstData(IssuedInst inst, int frontQ) {
     instPC = inst.getPC();
     inst.setRegDestTag(frontQ);
-    frontQ = frontQ + 1; //I added this
 
     // TODO - This is a long and complicated method, probably the most complex
     // of the project.  It does 2 things:
