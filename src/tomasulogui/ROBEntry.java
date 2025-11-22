@@ -97,7 +97,8 @@ public class ROBEntry {
               opcode == IssuedInst.INST_TYPE.BGTZ || opcode == IssuedInst.INST_TYPE.JR ||
               opcode == IssuedInst.INST_TYPE.JALR) {
           if (rob.getTagForReg(reg1) != -1) {
-              inst.setRegSrc1Tag(rob.getTagForReg(reg1));
+              inst.setRegSrc1Tag(frontQ);
+              rob.setTagForReg(reg1, frontQ);
           } else {
               inst.setRegSrc1Value(rob.getDataForReg(reg1));
               inst.setRegSrc1Valid();
@@ -112,8 +113,8 @@ public class ROBEntry {
           if (rob.getTagForReg(reg2) != -1) {
               inst.setRegSrc2Tag(rob.getTagForReg(reg2));
           } else {
-              inst.setRegSrc2Value(rob.getDataForReg(reg2));
-              inst.setRegSrc2Valid();
+              inst.setRegSrc2Tag(frontQ);
+              rob.setTagForReg(reg2, frontQ);
           }
       }
 

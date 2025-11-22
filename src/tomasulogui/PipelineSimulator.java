@@ -395,7 +395,7 @@ public class PipelineSimulator {
         cdb.setDataTag(alu.writeBackTag);
         cdb.setDataValue(alu.writeBackVal);
         cdb.setDataValid(true);
-        alu.stations[alu.writeBackStation] = null;
+        alu.stations[alu.writeBackStation] = null; //loader does this in ExecCycle so we might want to also
         alu.requestWriteback = false;
       }
       else {

@@ -60,6 +60,7 @@ public class ReorderBuffer {
       if (retiree.isComplete()) {
           int wbReg = retiree.getWriteReg();
           int wbVal = retiree.getWriteValue();
+          setTagForReg(wbReg, -1);
           regs.setReg(wbReg, wbVal);
       }
       else {
@@ -130,5 +131,4 @@ public class ReorderBuffer {
   public void setTagForReg(int regNum, int tag) {
     regs.setSlotForReg(regNum, tag);
   }
-
 }
