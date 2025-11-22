@@ -23,7 +23,7 @@ public abstract class FunctionalUnit {
     //todo - start executing, ask for CDB, etc.
     //PROBLEM should we always compute the first reservation station?
     for (int i = 0; i < 2; i++) {
-      if (stations[i].data1Valid && stations[i].data2Valid) {
+      if (stations[i] != null && stations[i].data1Valid && stations[i].data2Valid) {
         calculateResult(i);
       }
     } 
