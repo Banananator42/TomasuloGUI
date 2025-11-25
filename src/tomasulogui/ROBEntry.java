@@ -80,12 +80,17 @@ public class ROBEntry {
       int destReg = inst.getRegDest();
       IssuedInst.INST_TYPE opcode = inst.getOpcode();
 
+      //Update the tag for the destination
+      if (destReg != -1) {
+          rob.setTagForReg(destReg, frontQ);
+      }
+
       //ADD, ADDI, SUB, MUL, DIV, AND, ANDI, OR, ORI, XOR, XORI, SLL, SRL, SRA,
       //        LOAD, STORE, HALT,
       //        NOP, BEQ, BNE, BLTZ, BLEZ, BGEZ, BGTZ, J, JAL, JR, JALR
 
       //One-register instructions
-      if (opcode == IssuedInst.INST_TYPE.ADD || opcode == IssuedInst.INST_TYPE.SUB ||
+      /*if (opcode == IssuedInst.INST_TYPE.ADD || opcode == IssuedInst.INST_TYPE.SUB ||
               opcode == IssuedInst.INST_TYPE.AND || opcode == IssuedInst.INST_TYPE.BEQ ||
               opcode == IssuedInst.INST_TYPE.OR || opcode == IssuedInst.INST_TYPE.XOR ||
               opcode == IssuedInst.INST_TYPE.ADDI || opcode == IssuedInst.INST_TYPE.MUL ||
@@ -95,10 +100,11 @@ public class ROBEntry {
               opcode == IssuedInst.INST_TYPE.BNE || opcode == IssuedInst.INST_TYPE.BLTZ ||
               opcode == IssuedInst.INST_TYPE.BLEZ || opcode == IssuedInst.INST_TYPE.BGEZ ||
               opcode == IssuedInst.INST_TYPE.BGTZ || opcode == IssuedInst.INST_TYPE.JR ||
-              opcode == IssuedInst.INST_TYPE.JALR) {
-          if (rob.getTagForReg(reg1) != -1) {
-              inst.setRegSrc1Tag(frontQ);
-              rob.setTagForReg(reg1, frontQ);
+              opcode == IssuedInst.INST_TYPE.JALR) {*/
+      if (reg1 != -1) {
+          int tag = rob.getTagForReg(reg1);
+          if (tag != -1) {
+              inst.setRegSrc1Tag(tag);
           } else {
               inst.setRegSrc1Value(rob.getDataForReg(reg1));
               inst.setRegSrc1Valid();
@@ -106,12 +112,14 @@ public class ROBEntry {
       }
 
       //Two-register instructions
-      if (opcode == IssuedInst.INST_TYPE.ADD || opcode == IssuedInst.INST_TYPE.SUB ||
+      /*if (opcode == IssuedInst.INST_TYPE.ADD || opcode == IssuedInst.INST_TYPE.SUB ||
               opcode == IssuedInst.INST_TYPE.AND || opcode == IssuedInst.INST_TYPE.OR ||
               opcode == IssuedInst.INST_TYPE.XOR || opcode == IssuedInst.INST_TYPE.BEQ ||
-              opcode == IssuedInst.INST_TYPE.BNE) {
-          if (rob.getTagForReg(reg2) != -1) {
-              inst.setRegSrc2Tag(rob.getTagForReg(reg2));
+              opcode == IssuedInst.INST_TYPE.BNE) {*/
+      if (reg2 != -1) {
+          int tag = rob.getTagForReg(reg2);
+          if (tag != -1) {
+              inst.setRegSrc2Tag(tag);
           } else {
               inst.setRegSrc2Tag(frontQ);
               rob.setTagForReg(reg2, frontQ);
