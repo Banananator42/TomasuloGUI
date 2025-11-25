@@ -387,9 +387,10 @@ public class PipelineSimulator {
       // writeback.  We pick longest running of those who want to use CDB and
       // notify them they can write
       if (loader.requestWriteback) {
-        cdb.setDataTag(loader.writeData); //unsure if writeData and writeTag are the correct variables
-        cdb.setDataValue(loader.writeTag);
+        cdb.setDataTag(loader.writeTag); //unsure if writeData and writeTag are the correct variables
+        cdb.setDataValue(loader.writeData);
         cdb.setDataValid(true);
+        loader.setCanWriteback();
       }
       else if (alu.requestWriteback) {
         cdb.setDataTag(alu.writeBackTag);

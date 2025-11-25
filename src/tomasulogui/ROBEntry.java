@@ -110,6 +110,9 @@ public class ROBEntry {
               inst.setRegSrc1Valid();
           }
       }
+      else {
+          inst.setRegSrc1Valid();
+      }
 
       //Two-register instructions
       /*if (opcode == IssuedInst.INST_TYPE.ADD || opcode == IssuedInst.INST_TYPE.SUB ||
@@ -124,6 +127,9 @@ public class ROBEntry {
               inst.setRegSrc2Tag(frontQ);
               rob.setTagForReg(reg2, frontQ);
           }
+      }
+      else {
+          inst.setRegSrc2Valid();
       }
 
       //Immediate instructions

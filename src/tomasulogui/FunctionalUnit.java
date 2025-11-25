@@ -58,6 +58,14 @@ public abstract class FunctionalUnit {
                 }
             }
         }
+
+        if (cdb.getDataValid()) {
+            for (int i = 0; i < 2; i++) {
+                if (stations[i] != null) {
+                    stations[i].snoop(cdb);
+                }
+            }
+        }
     }
 
     public boolean isReservationStationAvail() { //modeled after method in LoadBuffer
