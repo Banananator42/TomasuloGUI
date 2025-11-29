@@ -80,11 +80,6 @@ public class ROBEntry {
       int destReg = inst.getRegDest();
       IssuedInst.INST_TYPE opcode = inst.getOpcode();
 
-      //Update the tag for the destination
-      if (destReg != -1) {
-          rob.setTagForReg(destReg, frontQ);
-      }
-
       //ADD, ADDI, SUB, MUL, DIV, AND, ANDI, OR, ORI, XOR, XORI, SLL, SRL, SRA,
       //        LOAD, STORE, HALT,
       //        NOP, BEQ, BNE, BLTZ, BLEZ, BGEZ, BGTZ, J, JAL, JR, JALR
@@ -103,11 +98,11 @@ public class ROBEntry {
               opcode == IssuedInst.INST_TYPE.JALR) {*/
       if (reg1 != -1) {
           int tag = rob.getTagForReg(reg1);
-          if (tag != -1) {
-              inst.setRegSrc1Tag(tag);
-          } else {
+          if (tag == -1 || reg1 == 0) {
               inst.setRegSrc1Value(rob.getDataForReg(reg1));
               inst.setRegSrc1Valid();
+          } else {
+              inst.setRegSrc1Tag(tag);
           }
       }
       else {
@@ -121,15 +116,21 @@ public class ROBEntry {
               opcode == IssuedInst.INST_TYPE.BNE) {*/
       if (reg2 != -1) {
           int tag = rob.getTagForReg(reg2);
-          if (tag != -1) {
-              inst.setRegSrc2Tag(tag);
+          if (tag == -1 || reg2 == 0) {
+              inst.setRegSrc2Value(rob.getDataForReg(reg2));
+              inst.setRegSrc2Valid();
           } else {
-              inst.setRegSrc2Tag(frontQ);
-              rob.setTagForReg(reg2, frontQ);
+              inst.setRegSrc2Tag(tag);
           }
       }
       else {
           inst.setRegSrc2Valid();
+      }
+
+      //Update the tag for the destination
+      //This should come after the source tags are set so that, if it write to a reg it reads from, it doesn't wait on itself
+      if (destReg != -1) {
+          rob.setTagForReg(destReg, frontQ);
       }
 
       //Immediate instructions

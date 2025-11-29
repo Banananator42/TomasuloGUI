@@ -59,25 +59,26 @@ public class IssueUnit {
             case ALU -> fu = simulator.getALU();
         }
 
-        simulator.getROB().updateInstForIssue(issuee);
-        //look for some forwarding
-        CDB cdb = simulator.getCDB();
-        if (issuee.getRegSrc1Tag() == cdb.getDataTag() && cdb.getDataValid()) {
-            issuee.setRegSrc1Value(cdb.getDataValue());
-            issuee.setRegSrc1Valid();
-        }
-        if (issuee.getRegSrc2Tag() == cdb.getDataTag() && cdb.getDataValid()) {
-            issuee.setRegSrc2Value(cdb.getDataValue());
-            issuee.setRegSrc2Valid();
-        }
-
         //send a LOAD to the buffer if space is available
         if (type == EXEC_TYPE.LOAD) {
             LoadBuffer loadBuffer = (LoadBuffer) fu;
             if (loadBuffer.isReservationStationAvail()) {
+                simulator.getROB().updateInstForIssue(issuee);
+
+                //look for some forwarding
+                CDB cdb = simulator.getCDB();
+                if (issuee.getRegSrc1Tag() == cdb.getDataTag() && cdb.getDataValid()) {
+                    issuee.setRegSrc1Value(cdb.getDataValue());
+                    issuee.setRegSrc1Valid();
+                }
+                if (issuee.getRegSrc2Tag() == cdb.getDataTag() && cdb.getDataValid()) {
+                    issuee.setRegSrc2Value(cdb.getDataValue());
+                    issuee.setRegSrc2Valid();
+                }
+
                 loadBuffer.acceptIssue(issuee);
+                simulator.pc.incrPC();
             }
-            simulator.pc.incrPC();
         }
         else { //the fu must be a child of FunctionalUnit
             FunctionalUnit functionalUnit = (FunctionalUnit) fu;
@@ -86,12 +87,23 @@ public class IssueUnit {
                 BranchPredictor btb = simulator.getBTB();
                 btb.predictBranch(issuee); //this will change the PC either way
             }
-            else {
-                simulator.pc.incrPC();
-            }
 
             if (functionalUnit.isReservationStationAvail()) {
+                simulator.getROB().updateInstForIssue(issuee);
+
+                //look for some forwarding
+                CDB cdb = simulator.getCDB();
+                if (issuee.getRegSrc1Tag() == cdb.getDataTag() && cdb.getDataValid()) {
+                    issuee.setRegSrc1Value(cdb.getDataValue());
+                    issuee.setRegSrc1Valid();
+                }
+                if (issuee.getRegSrc2Tag() == cdb.getDataTag() && cdb.getDataValid()) {
+                    issuee.setRegSrc2Value(cdb.getDataValue());
+                    issuee.setRegSrc2Valid();
+                }
+
                 functionalUnit.acceptIssue(issuee);
+                simulator.pc.incrPC();
             }
         }
     }

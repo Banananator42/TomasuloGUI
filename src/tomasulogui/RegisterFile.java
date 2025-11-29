@@ -13,6 +13,9 @@ public class RegisterFile {
   }
 
   public int getReg(int regNum) {
+      if (regNum == 0) { //Brayden added this
+          return 0;
+      }
     return regs[regNum];
   }
 
