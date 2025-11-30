@@ -101,7 +101,12 @@ public class ROBEntry {
           if (tag == -1 || reg1 == 0) {
               inst.setRegSrc1Value(rob.getDataForReg(reg1));
               inst.setRegSrc1Valid();
-          } else {
+          }
+          else if (rob.getEntryByTag(tag).isComplete()) {
+              inst.setRegSrc1Value(rob.getEntryByTag(tag).writeValue);
+              inst.setRegSrc1Valid();
+          }
+          else {
               inst.setRegSrc1Tag(tag);
           }
       }
@@ -119,7 +124,12 @@ public class ROBEntry {
           if (tag == -1 || reg2 == 0) {
               inst.setRegSrc2Value(rob.getDataForReg(reg2));
               inst.setRegSrc2Valid();
-          } else {
+          }
+          else if (rob.getEntryByTag(tag).isComplete()) {
+              inst.setRegSrc2Value(rob.getEntryByTag(tag).writeValue);
+              inst.setRegSrc2Valid();
+          }
+          else {
               inst.setRegSrc2Tag(tag);
           }
       }
@@ -134,7 +144,7 @@ public class ROBEntry {
       }
 
       //Immediate instructions
-      if (inst.type == IssuedInst.INST_CATEGORY.I_TYPE) {
+      if (inst.getImmediate() != -1) {
           inst.setRegSrc2Value(inst.getImmediate());
           inst.setRegSrc2Valid();
       }
