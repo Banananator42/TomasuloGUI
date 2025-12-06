@@ -29,8 +29,9 @@ public class BranchUnit
             case JAL, JALR, J, JR -> isBranchTaken = true;
         }
 
-        if (isBranchTaken) {
-
+        if (isBranchTaken != stations[station].isPredictedTaken()) {
+            simulator.squashAllInsts();
+            return 1;
         }
 
         int tag = stations[station].getDestTag();

@@ -58,7 +58,7 @@ public class ReorderBuffer {
     // figure out how to retire it properly
 
       if (retiree.isComplete()) {
-          if (!isOpcodeBranch(retiree.getOpcode())) {
+          if (!isOpcodeBranch(retiree.getOpcode()) && retiree.getOpcode() != IssuedInst.INST_TYPE.STORE) {
               int wbReg = retiree.getWriteReg();
               int wbVal = retiree.getWriteValue();
               setTagForReg(wbReg, -1);

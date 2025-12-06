@@ -80,5 +80,6 @@ public class ReservationStation {
       }
       function = inst.getOpcode();
       destTag = inst.getRegDestTag();
+      predictedTaken = inst.getBranchPrediction();
   }
 }
