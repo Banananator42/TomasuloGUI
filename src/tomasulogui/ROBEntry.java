@@ -125,7 +125,10 @@ public class ROBEntry {
       }
 
       //Immediate instructions
-      if (inst.getImmediate() != -1) {
+      if (inst.getOpcode() == IssuedInst.INST_TYPE.ADDI || inst.getOpcode() == IssuedInst.INST_TYPE.ANDI ||
+            inst.getOpcode() == IssuedInst.INST_TYPE.ORI || inst.getOpcode() == IssuedInst.INST_TYPE.XORI ||
+            inst.getOpcode() == IssuedInst.INST_TYPE.SLL || inst.getOpcode() == IssuedInst.INST_TYPE.SRA ||
+              inst.getOpcode() == IssuedInst.INST_TYPE.SRL) {
           inst.setRegSrc2Value(inst.getImmediate());
           inst.setRegSrc2Valid();
       }
