@@ -58,10 +58,16 @@ public class ReorderBuffer {
     // figure out how to retire it properly
 
       if (retiree.isComplete()) {
-          int wbReg = retiree.getWriteReg();
-          int wbVal = retiree.getWriteValue();
-          setTagForReg(wbReg, -1);
-          regs.setReg(wbReg, wbVal);
+          if (!isOpcodeBranch(retiree.getOpcode())) {
+              int wbReg = retiree.getWriteReg();
+              int wbVal = retiree.getWriteValue();
+              setTagForReg(wbReg, -1);
+              regs.setReg(wbReg, wbVal);
+          }
+          else if(retiree.getOpcode() == IssuedInst.INST_TYPE.JAL || retiree.getOpcode() == IssuedInst.INST_TYPE.JALR ) {
+              int wbVal = retiree.getWriteValue();
+              regs.setReg(31, wbVal);
+          }
       }
       else {
           shouldAdvance = false;
@@ -75,6 +81,19 @@ public class ReorderBuffer {
       }
 
     return false;
+  }
+
+  private boolean isOpcodeBranch(IssuedInst.INST_TYPE opcode) {
+      return opcode == IssuedInst.INST_TYPE.BEQ ||
+              opcode == IssuedInst.INST_TYPE.BNE ||
+              opcode == IssuedInst.INST_TYPE.BLTZ ||
+              opcode == IssuedInst.INST_TYPE.BLEZ ||
+              opcode == IssuedInst.INST_TYPE.BGEZ ||
+              opcode == IssuedInst.INST_TYPE.BGTZ ||
+              opcode == IssuedInst.INST_TYPE.J ||
+              opcode == IssuedInst.INST_TYPE.JAL ||
+              opcode == IssuedInst.INST_TYPE.JR ||
+              opcode == IssuedInst.INST_TYPE.JALR;
   }
 
   public void readCDB(CDB cdb) {

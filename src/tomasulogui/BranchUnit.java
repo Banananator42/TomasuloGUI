@@ -28,16 +28,18 @@ public class BranchUnit
             //NEED TO set MISS button false in ROB if getBranchPrediction()
             case JAL, JALR, J, JR -> isBranchTaken = true;
         }
-        /*if(isBranchTaken) {
-            requestWriteback = true;
-            writeBackTag = stations[station].destTag;
-            writeBackStation = station;
-        }
-        simulator.getBTB().setBranchResult(simulator.getPC(), isBranchTaken); //train the BTB with branch data?*/
 
         if (isBranchTaken) {
-            return 1;
+
         }
+
+        int tag = stations[station].getDestTag();
+        simulator.getROB().getEntryByTag(tag).complete = true;
+        simulator.getBTB().setBranchResult(simulator.getPC(), isBranchTaken); //train the BTB with branch data?*/
+        stations[station] = null;
+        ReorderBuffer rob = simulator.getROB();
+        rob.buff[tag].setWriteValue(rob.getInstPC(tag) + 4);
+
         return 0;
     }
 

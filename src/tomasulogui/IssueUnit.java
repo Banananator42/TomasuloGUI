@@ -45,7 +45,9 @@ public class IssueUnit {
             case Instruction.INST_MUL -> type = EXEC_TYPE.MULT;
             case Instruction.INST_DIV -> type = EXEC_TYPE.DIV;
             case Instruction.INST_BEQ, Instruction.INST_BNE, Instruction.INST_BGEZ,
-                 Instruction.INST_BLEZ, Instruction.INST_BGTZ, Instruction.INST_BLTZ ->
+                 Instruction.INST_BLEZ, Instruction.INST_BGTZ, Instruction.INST_BLTZ,
+                 Instruction.INST_JAL, Instruction.INST_JALR,
+                 Instruction.INST_J, Instruction.INST_JR ->
                     type = EXEC_TYPE.BRANCH;
             default -> type = EXEC_TYPE.ALU;
         }

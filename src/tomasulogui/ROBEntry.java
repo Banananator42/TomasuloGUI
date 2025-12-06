@@ -21,7 +21,7 @@ public class ROBEntry {
 
   //public IssuedInst.INST_CATEGORY getType() {
   //    return type;
-  //  }
+  //}
 
   public boolean isComplete() {
     return complete;
@@ -78,7 +78,7 @@ public class ROBEntry {
       int reg1 = inst.getRegSrc1();
       int reg2 = inst.getRegSrc2();
       int destReg = inst.getRegDest();
-      IssuedInst.INST_TYPE opcode = inst.getOpcode();
+      opcode = inst.getOpcode();
 
       //One-register instructions
       if (reg1 != -1) {
