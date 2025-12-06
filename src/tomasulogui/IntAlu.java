@@ -1,15 +1,23 @@
 package tomasulogui;
 
-public class IntAlu extends FunctionalUnit{
+public class IntAlu extends FunctionalUnit {
   public static final int EXEC_CYCLES = 1;
 
   public IntAlu(PipelineSimulator sim) {
     super(sim);
   }
 
+    int writeBackVal = -1;
+    int writeBackTag = -1;
+    boolean requestWriteback = false;
+    int writeBackStation = -1;
 
   public int calculateResult(int station) {
      // just placeholder code
+      requestWriteback = true;
+      writeBackTag = stations[station].destTag;
+      writeBackStation = station;
+
     int result=0;
     int data1 = stations[station].getData1();
     int data2 = stations[station].getData2();
@@ -24,6 +32,9 @@ public class IntAlu extends FunctionalUnit{
         case SRL -> result = data1 >>> data2;
         case SRA -> result = data1 >> data2;
     }
+
+    writeBackVal = result;
+
     return result;
   }
 

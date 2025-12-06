@@ -11,13 +11,34 @@ public class BranchUnit
 
     public int calculateResult(int station) {
          // just placeholder code
-        int result = 0;
+        int branchCompare = 0;
         int data1 = stations[station].getData1();
         int data2 = stations[station].getData2();
 
-        result = data1 - data2; //might need to do data2 - data1
+        branchCompare = data1 - data2; //might need to do data2 - data1
+        boolean isBranchTaken = false; //might need to exist elsewhere, added here for now
+        switch (stations[station].getFunction()) {
+            case BEQ -> isBranchTaken = branchCompare == 0;
+            case BGEZ -> isBranchTaken = branchCompare >= 0;
+            case BLEZ -> isBranchTaken = branchCompare <= 0;
+            case BNE -> isBranchTaken = branchCompare != 0;
+            case BGTZ -> isBranchTaken = branchCompare > 0;
+            case BLTZ -> isBranchTaken = branchCompare < 0;
+            //need to implement J functions
+            //NEED TO set MISS button false in ROB if getBranchPrediction()
+            case JAL, JALR, J, JR -> isBranchTaken = true;
+        }
+        /*if(isBranchTaken) {
+            requestWriteback = true;
+            writeBackTag = stations[station].destTag;
+            writeBackStation = station;
+        }
+        simulator.getBTB().setBranchResult(simulator.getPC(), isBranchTaken); //train the BTB with branch data?*/
 
-        return result;
+        if (isBranchTaken) {
+            return 1;
+        }
+        return 0;
     }
 
     public int getExecCycles() {

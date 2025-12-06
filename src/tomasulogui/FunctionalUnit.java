@@ -4,11 +4,6 @@ public abstract class FunctionalUnit {
     PipelineSimulator simulator;
     ReservationStation[] stations = new ReservationStation[2];
 
-    int writeBackVal = -1;
-    int writeBackTag = -1;
-    boolean requestWriteback = false;
-    int writeBackStation = -1;
-
     public FunctionalUnit(PipelineSimulator sim) {
         simulator = sim;
     }
@@ -29,33 +24,7 @@ public abstract class FunctionalUnit {
         //PROBLEM should we always compute the first reservation station?
         for (int i = 0; i < 2; i++) {
             if (stations[i] != null && stations[i].data1Valid && stations[i].data2Valid) {
-                if(this instanceof IntAlu) {
-                    writeBackVal = calculateResult(i);
-                    requestWriteback = true;
-                    writeBackTag = stations[i].destTag;
-                    writeBackStation = i;
-                }
-                else if(this instanceof BranchUnit) {
-                    int branchCompare = calculateResult(i);
-                    boolean isBranchTaken = false; //might need to exist elsewhere, added here for now
-                    switch (stations[i].getFunction()) {
-                        case BEQ -> isBranchTaken = branchCompare == 0;
-                        case BGEZ -> isBranchTaken = branchCompare >= 0;
-                        case BLEZ -> isBranchTaken = branchCompare <= 0;
-                        case BNE -> isBranchTaken = branchCompare != 0;
-                        case BGTZ -> isBranchTaken = branchCompare > 0;
-                        case BLTZ -> isBranchTaken = branchCompare < 0;
-                        //need to implement J functions
-                        //NEED TO set MISS button false in ROB if getBranchPrediction()
-                        case JAL, JALR, J, JR -> isBranchTaken = true;
-                    }
-                    if(isBranchTaken) {
-                        requestWriteback = true;
-                        writeBackTag = stations[i].destTag;
-                        writeBackStation = i;
-                    }
-                    simulator.getBTB().setBranchResult(simulator.getPC(), isBranchTaken); //train the BTB with branch data?
-                }
+                calculateResult(i);
             }
         }
 
