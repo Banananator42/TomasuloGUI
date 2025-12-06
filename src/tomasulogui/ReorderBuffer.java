@@ -58,7 +58,10 @@ public class ReorderBuffer {
     // figure out how to retire it properly
 
       if (retiree.isComplete()) {
-          if (!isOpcodeBranch(retiree.getOpcode()) && retiree.getOpcode() != IssuedInst.INST_TYPE.STORE) {
+          if (retiree.getOpcode() != IssuedInst.INST_TYPE.STORE){
+              simulator.getMemory().setIntDataAtAddr(, retiree.getWriteValue());
+          }
+          else if (!isOpcodeBranch(retiree.getOpcode()) && retiree.getOpcode() != IssuedInst.INST_TYPE.NOP) {
               int wbReg = retiree.getWriteReg();
               int wbVal = retiree.getWriteValue();
               setTagForReg(wbReg, -1);
