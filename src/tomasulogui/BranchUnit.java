@@ -40,6 +40,7 @@ public class BranchUnit
         stations[station] = null;
         ReorderBuffer rob = simulator.getROB();
         rob.buff[tag].setWriteValue(rob.getInstPC(tag) + 4);
+        rob.buff[tag].complete = true;
 
         return 0;
     }

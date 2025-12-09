@@ -58,8 +58,12 @@ public class ReorderBuffer {
     // figure out how to retire it properly
 
       if (retiree.isComplete()) {
-          if (retiree.getOpcode() != IssuedInst.INST_TYPE.STORE){
-              simulator.getMemory().setIntDataAtAddr(, retiree.getWriteValue());
+          if (retiree.getOpcode() == IssuedInst.INST_TYPE.STORE){
+              int writeVal = retiree.getWriteValue();
+              if (!retiree.storeDataValid) {
+                  writeVal = regs.getReg(retiree.reg2);
+              }
+              simulator.getMemory().setIntDataAtAddr(retiree.address + regs.getReg(retiree.reg1), writeVal);
           }
           else if (!isOpcodeBranch(retiree.getOpcode()) && retiree.getOpcode() != IssuedInst.INST_TYPE.NOP) {
               int wbReg = retiree.getWriteReg();

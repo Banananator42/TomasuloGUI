@@ -8,9 +8,13 @@ public class ROBEntry {
   boolean complete = false;
   boolean predictTaken = false;
   boolean mispredicted = false;
+  boolean storeDataValid = true;
   int instPC = -1;
   int writeReg = -1;
   int writeValue = -1;
+  int address;
+  int reg1;
+  int reg2;
 
   IssuedInst.INST_TYPE opcode;
   //IssuedInst.INST_CATEGORY type;
@@ -75,10 +79,23 @@ public class ROBEntry {
 
       //First update the instruction
       //Is the register stored as a tag right now, meaning someone is waiting to write to it?
-      int reg1 = inst.getRegSrc1();
-      int reg2 = inst.getRegSrc2();
+      reg1 = inst.getRegSrc1();
+      reg2 = inst.getRegSrc2();
       int destReg = inst.getRegDest();
       opcode = inst.getOpcode();
+      address = inst.getImmediate();
+
+      storeDataValid = true;
+      for (ROBEntry entry : rob.buff) {
+          if (entry != null && entry.getWriteReg() == reg2) {
+              storeDataValid = false;
+              break;
+          }
+      }
+      if (storeDataValid && opcode == IssuedInst.INST_TYPE.STORE) {
+          complete = true;
+          writeValue = rob.getDataForReg(reg2);
+      }
 
       //One-register instructions
       if (reg1 != -1) {
@@ -136,7 +153,12 @@ public class ROBEntry {
       }
 
       //Then update the ROBEntry
-      writeReg = destReg;
+      if (opcode == IssuedInst.INST_TYPE.JAL || inst.getOpcode() == IssuedInst.INST_TYPE.JALR) {
+          writeReg = 31;
+      }
+      else {
+          writeReg = destReg;
+      }
       //type = inst.getType();
   }
 

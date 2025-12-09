@@ -82,13 +82,12 @@ public class IssueUnit {
                 simulator.pc.incrPC();
             }
         }
+        else if (instr.getOpcode() == Instruction.INST_SW) {
+            simulator.getROB().updateInstForIssue(issuee);
+            simulator.pc.incrPC();
+        }
         else { //the fu must be a child of FunctionalUnit
             FunctionalUnit functionalUnit = (FunctionalUnit) fu;
-
-            if (type == EXEC_TYPE.BRANCH) {
-                BranchPredictor btb = simulator.getBTB();
-                btb.predictBranch(issuee); //this will change the PC either way
-            }
 
             if (functionalUnit.isReservationStationAvail()) {
                 simulator.getROB().updateInstForIssue(issuee);
@@ -104,8 +103,14 @@ public class IssueUnit {
                     issuee.setRegSrc2Valid();
                 }
 
+                if (type == EXEC_TYPE.BRANCH) {
+                    BranchPredictor btb = simulator.getBTB();
+                    btb.predictBranch(issuee); //this will change the PC either way
+                }
+                else {
+                    simulator.pc.incrPC();
+                }
                 functionalUnit.acceptIssue(issuee);
-                simulator.pc.incrPC();
             }
         }
     }
