@@ -84,6 +84,7 @@ public class ROBEntry {
       int destReg = inst.getRegDest();
       opcode = inst.getOpcode();
       address = inst.getImmediate();
+      predictTaken = inst.getBranchPrediction();
 
       storeDataValid = true;
       for (ROBEntry entry : rob.buff) {

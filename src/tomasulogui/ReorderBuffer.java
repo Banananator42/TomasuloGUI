@@ -68,7 +68,14 @@ public class ReorderBuffer {
           else if (!isOpcodeBranch(retiree.getOpcode()) && retiree.getOpcode() != IssuedInst.INST_TYPE.NOP) {
               int wbReg = retiree.getWriteReg();
               int wbVal = retiree.getWriteValue();
-              setTagForReg(wbReg, -1);
+              int newTag = -1;
+              for (int i = frontQ + 1; i < rearQ; i++) {
+                  if (buff[i].writeReg == wbReg) {
+                      newTag = i;
+                      break;
+                  }
+              }
+              setTagForReg(wbReg, newTag);
               regs.setReg(wbReg, wbVal);
           }
           else if(retiree.getOpcode() == IssuedInst.INST_TYPE.JAL || retiree.getOpcode() == IssuedInst.INST_TYPE.JALR ) {
