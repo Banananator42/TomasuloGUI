@@ -57,11 +57,11 @@ public class ReorderBuffer {
     // TODO - this is where you look at the type of instruction and
     // figure out how to retire it properly
 
-      if (retiree.isComplete()) {
+      if (retiree.isComplete() || retiree.getOpcode() == IssuedInst.INST_TYPE.STORE) {
           if (retiree.getOpcode() == IssuedInst.INST_TYPE.STORE){
               int writeVal = retiree.getWriteValue();
               if (!retiree.storeDataValid) {
-                  writeVal = regs.getReg(retiree.reg2);
+                writeVal = regs.getReg(retiree.reg2);
               }
               simulator.getMemory().setIntDataAtAddr(retiree.address + regs.getReg(retiree.reg1), writeVal);
           }
