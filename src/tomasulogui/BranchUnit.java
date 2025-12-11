@@ -15,6 +15,7 @@ public class BranchUnit
         int data1 = stations[station].getData1();
         int data2 = stations[station].getData2();
 
+
         branchCompare = data1 - data2; //might need to do data2 - data1
         boolean isBranchTaken = false; //might need to exist elsewhere, added here for now
         switch (stations[station].getFunction()) {
@@ -48,7 +49,12 @@ public class BranchUnit
             }
         }
 
-        if (isBranchTaken && stations[station].getFunction() == IssuedInst.INST_TYPE.BEQ) {
+        if (isBranchTaken && (stations[station].getFunction() == IssuedInst.INST_TYPE.BEQ ||
+                stations[station].getFunction() == IssuedInst.INST_TYPE.BGEZ ||
+                stations[station].getFunction() == IssuedInst.INST_TYPE.BLEZ ||
+                stations[station].getFunction() == IssuedInst.INST_TYPE.BLTZ ||
+                stations[station].getFunction() == IssuedInst.INST_TYPE.BGTZ ||
+                stations[station].getFunction() == IssuedInst.INST_TYPE.BNE)) {
             simulator.setPC(rob.buff[tag].branchPredictedTarget);
         }
 
