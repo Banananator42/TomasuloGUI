@@ -56,13 +56,13 @@ public class BranchUnit
                 stations[station].getFunction() == IssuedInst.INST_TYPE.BGTZ ||
                 stations[station].getFunction() == IssuedInst.INST_TYPE.BNE)) {
             simulator.setPC(rob.buff[tag].branchPredictedTarget);
-            simulator.squashAllInsts();
         }
 
         simulator.getBTB().setBranchResult(branchPC, isBranchTaken); //train the BTB with branch data?*/
         stations[station] = null;
         rob.buff[tag].setWriteValue(branchPC + 4); //writeValue is used for JAL and JALR
         rob.buff[tag].complete = true;
+        rob.buff[tag].mispredicted = isBranchTaken != rob.buff[tag].predictTaken;
 
         return 0;
     }

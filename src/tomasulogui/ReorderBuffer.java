@@ -65,14 +65,17 @@ public class ReorderBuffer {
     // figure out how to retire it properly
 
       if (retiree.isComplete() || retiree.getOpcode() == IssuedInst.INST_TYPE.STORE) {
-          if (retiree.getOpcode() == IssuedInst.INST_TYPE.STORE){
+          if(isOpcodeBranch(retiree.getOpcode()) && retiree.predictTaken && !retiree.mispredicted) {
+              simulator.squashAllInsts();
+          }
+          else if (retiree.getOpcode() == IssuedInst.INST_TYPE.STORE){
               int writeVal = retiree.getWriteValue();
               if (!retiree.storeDataValid) {
                 writeVal = regs.getReg(retiree.reg2);
               }
               simulator.getMemory().setIntDataAtAddr(retiree.address + regs.getReg(retiree.reg1), writeVal);
           }
-          else if (!isOpcodeBranch(retiree.getOpcode()) && retiree.getOpcode() != IssuedInst.INST_TYPE.NOP) {
+          else if (retiree.getOpcode() != IssuedInst.INST_TYPE.NOP) {
               int wbReg = retiree.getWriteReg();
               int wbVal = retiree.getWriteValue();
               int newTag = -1;
