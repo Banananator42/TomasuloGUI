@@ -11,9 +11,7 @@ public abstract class FunctionalUnit {
 
     public void squashAll() {
         for (int i = 0; i < stations.length; i++) {
-            if (stations[i] != null) {
-                stations[i].isSquashed = true;
-            }
+            stations[i] = null;
         }
     }
 
@@ -25,10 +23,7 @@ public abstract class FunctionalUnit {
         //todo - start executing, ask for CDB, etc.
         //PROBLEM should we always compute the first reservation station?
         for (int i = 0; i < 2; i++) {
-            if (stations[i] != null && stations[i].isSquashed) {
-                stations[i] = null;
-            }
-            else if (stations[i] != null && stations[i].data1Valid && stations[i].data2Valid) {
+            if (stations[i] != null && stations[i].data1Valid && stations[i].data2Valid) {
                 calculateResult(i);
             }
         }

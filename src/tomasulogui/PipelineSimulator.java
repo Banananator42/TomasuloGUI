@@ -376,6 +376,7 @@ public class PipelineSimulator {
 
       loader.squashAll();
       alu.squashAll();
+      alu.requestWriteback = false;
 //      multiplier.squashAll();
 //      divider.squashAll();
       branchUnit.squashAll();
