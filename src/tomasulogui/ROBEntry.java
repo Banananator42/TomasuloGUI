@@ -138,12 +138,6 @@ public class ROBEntry {
           inst.setRegSrc2Valid();
       }
 
-      //Update the tag for the destination
-      //This should come after the source tags are set so that, if it write to a reg it reads from, it doesn't wait on itself
-      if (destReg != -1) {
-          rob.setTagForReg(destReg, frontQ);
-      }
-
       //Immediate instructions
       if (inst.getOpcode() == IssuedInst.INST_TYPE.ADDI || inst.getOpcode() == IssuedInst.INST_TYPE.ANDI ||
             inst.getOpcode() == IssuedInst.INST_TYPE.ORI || inst.getOpcode() == IssuedInst.INST_TYPE.XORI ||
@@ -161,6 +155,12 @@ public class ROBEntry {
       }
       else {
           writeReg = destReg;
+      }
+
+      //Update the tag for the destination
+      //This should come after the source tags are set so that, if it write to a reg it reads from, it doesn't wait on itself
+      if (writeReg != -1) {
+          rob.setTagForReg(writeReg, frontQ);
       }
       //type = inst.getType();
   }
