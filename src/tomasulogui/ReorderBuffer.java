@@ -69,9 +69,13 @@ public class ReorderBuffer {
               int wbReg = retiree.getWriteReg();
               int wbVal = retiree.getWriteValue();
               int newTag = -1;
-              for (int i = frontQ + 1; i < rearQ; i++) {
-                  if (buff[i].writeReg == wbReg) {
-                      newTag = i;
+              int end = rearQ;
+              if (end < frontQ) {
+                  end = end + 30;
+              }
+              for (int i = frontQ + 1; i < end; i++) {
+                  if (buff[i % 30].writeReg == wbReg) {
+                      newTag = i % 30;
                       break;
                   }
               }
