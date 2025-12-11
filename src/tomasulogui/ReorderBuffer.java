@@ -65,8 +65,7 @@ public class ReorderBuffer {
     // figure out how to retire it properly
 
       if (retiree.isComplete() || retiree.getOpcode() == IssuedInst.INST_TYPE.STORE) {
-          if(isOpcodeBranch(retiree.getOpcode()) && ((retiree.predictTaken && !retiree.mispredicted) ||
-                  (!retiree.predictTaken && retiree.mispredicted)) &&
+          if(isOpcodeBranch(retiree.getOpcode()) && (retiree.predictTaken || retiree.mispredicted) &&
                   (retiree.getOpcode() != IssuedInst.INST_TYPE.JAL &&
                   retiree.getOpcode() != IssuedInst.INST_TYPE.J &&
                   retiree.getOpcode() != IssuedInst.INST_TYPE.JR)) {
