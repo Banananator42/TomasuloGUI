@@ -65,20 +65,27 @@ public class ReorderBuffer {
     // figure out how to retire it properly
 
       if (retiree.isComplete() || retiree.getOpcode() == IssuedInst.INST_TYPE.STORE) {
-          if(isOpcodeBranch(retiree.getOpcode()) && retiree.mispredicted &&
+          if(isOpcodeBranch(retiree.getOpcode()) && retiree.mispredicted) { /* &&
                   (retiree.getOpcode() != IssuedInst.INST_TYPE.JAL &&
                   retiree.getOpcode() != IssuedInst.INST_TYPE.J &&
-                  retiree.getOpcode() != IssuedInst.INST_TYPE.JR)) {
-              //only squash if mispredicted
+                  retiree.getOpcode() != IssuedInst.INST_TYPE.JR)) { */
+              // only squash if mispredicted
+              // mispredictions could mean that a JR/JALR anticipated the wrong address
+              // or a branch predicted the wrong evaluation
               simulator.squashAllInsts();
               shouldAdvance = false;
 
-              //Correct the missed predications
-              if (retiree.predictTaken) {
-                  simulator.setPC(retiree.instPC + 4);
+              //Correct the missed predications based on type
+              if (retiree.getOpcode() == IssuedInst.INST_TYPE.JR ||
+                retiree.getOpcode() == IssuedInst.INST_TYPE.JALR) {
+                  simulator.setPC(retiree.correctBranchTarget);
               }
-              else {
-                  simulator.setPC(retiree.branchPredictedTarget);
+              else { // It's a branch
+                  if (retiree.predictTaken) {
+                      simulator.setPC(retiree.instPC + 4);
+                  } else {
+                      simulator.setPC(retiree.branchPredictedTarget);
+                  }
               }
           }
           if (retiree.getOpcode() == IssuedInst.INST_TYPE.STORE){

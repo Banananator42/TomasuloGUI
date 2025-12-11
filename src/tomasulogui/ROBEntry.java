@@ -16,6 +16,7 @@ public class ROBEntry {
   int reg1;
   int reg2;
   int branchPredictedTarget;
+  int correctBranchTarget;
 
   IssuedInst.INST_TYPE opcode;
   //IssuedInst.INST_CATEGORY type;

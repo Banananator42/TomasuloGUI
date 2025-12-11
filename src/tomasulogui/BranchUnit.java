@@ -15,6 +15,11 @@ public class BranchUnit
         int data1 = stations[station].getData1();
         int data2 = stations[station].getData2();
 
+        int tag = stations[station].getDestTag();
+        ROBEntry robEntry = simulator.getROB().getEntryByTag(tag);
+
+        //assume not mispredicted, update later in function
+        boolean mispredicted = false;
 
         branchCompare = data1 - data2; //might need to do data2 - data1
         boolean isBranchTaken = false; //might need to exist elsewhere, added here for now
@@ -35,25 +40,30 @@ public class BranchUnit
 //            return 1;
 //        }
 
-        int tag = stations[station].getDestTag();
-        ReorderBuffer rob = simulator.getROB();
-        int branchPC = rob.buff[tag].getInstPC();
+
 
         //If it is JAL or JALR, the target may have been calculated
         //Let the BTB know, set the address, and see if it was mispredicted
         if (stations[station].getFunction() == IssuedInst.INST_TYPE.JR ||
                 stations[station].getFunction() == IssuedInst.INST_TYPE.JALR) {
-            simulator.getBTB().setBranchAddress(branchPC, data1); //train BTB
-            if (rob.buff[tag].branchPredictedTarget != data1) { //predicted wrong address, so set PC correctly
+            simulator.getBTB().setBranchAddress(robEntry.getInstPC(), data1); //train BTB
+            if (robEntry.branchPredictedTarget != data1) { //predicted wrong address, so set PC correctly
                 simulator.setPC(data1);
+                robEntry.correctBranchTarget = data1;
+                mispredicted = true;
+            }
+            else {
+                robEntry.correctBranchTarget = robEntry.branchPredictedTarget;
             }
         }
 
-        simulator.getBTB().setBranchResult(branchPC, isBranchTaken); //train the BTB with branch data?*/
+        simulator.getBTB().setBranchResult(robEntry.getInstPC(), isBranchTaken); //train the BTB with branch data?*/
         stations[station] = null;
-        rob.buff[tag].setWriteValue(branchPC + 4); //writeValue is used for JAL and JALR
-        rob.buff[tag].complete = true;
-        rob.buff[tag].mispredicted = isBranchTaken != rob.buff[tag].predictTaken;
+        robEntry.setWriteValue(robEntry.getInstPC() + 4); //writeValue is used for JAL and JALR
+        robEntry.complete = true;
+        mispredicted |= isBranchTaken != robEntry.predictTaken;
+
+        robEntry.mispredicted = mispredicted;
 
         return 0;
     }
