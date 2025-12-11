@@ -90,7 +90,7 @@ public class IssueUnit {
             FunctionalUnit functionalUnit = (FunctionalUnit) fu;
 
             if (functionalUnit.isReservationStationAvail()) {
-                simulator.getROB().updateInstForIssue(issuee);
+
 
                 //look for some forwarding
                 CDB cdb = simulator.getCDB();
@@ -110,6 +110,9 @@ public class IssueUnit {
                 else {
                     simulator.pc.incrPC();
                 }
+
+                simulator.getROB().updateInstForIssue(issuee);
+
                 functionalUnit.acceptIssue(issuee);
             }
         }

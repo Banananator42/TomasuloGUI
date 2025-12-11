@@ -15,6 +15,7 @@ public class ROBEntry {
   int address;
   int reg1;
   int reg2;
+  int branchPredictedTarget;
 
   IssuedInst.INST_TYPE opcode;
   //IssuedInst.INST_CATEGORY type;
@@ -85,6 +86,7 @@ public class ROBEntry {
       opcode = inst.getOpcode();
       address = inst.getImmediate();
       predictTaken = inst.getBranchPrediction();
+      branchPredictedTarget = inst.getBranchTgt();
 
       storeDataValid = true;
       for (ROBEntry entry : rob.buff) {

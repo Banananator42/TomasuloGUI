@@ -35,11 +35,22 @@ public class BranchUnit
         }
 
         int tag = stations[station].getDestTag();
-        simulator.getROB().getEntryByTag(tag).complete = true;
-        simulator.getBTB().setBranchResult(simulator.getPC(), isBranchTaken); //train the BTB with branch data?*/
-        stations[station] = null;
         ReorderBuffer rob = simulator.getROB();
-        rob.buff[tag].setWriteValue(rob.getInstPC(tag) + 4);
+        int branchPC = rob.buff[tag].getInstPC();
+
+        //If it is JAL or JALR, the target may have been calculated
+        //Let the BTB know, set the address, and see if it was mispredicted
+        if (stations[station].getFunction() == IssuedInst.INST_TYPE.JR ||
+                stations[station].getFunction() == IssuedInst.INST_TYPE.JALR) {
+            simulator.getBTB().setBranchAddress(branchPC, data1); //train BTB
+            if (rob.buff[tag].branchPredictedTarget != data1) { //predicted wrong address, so set PC correctly
+                simulator.setPC(data1);
+            }
+        }
+
+        simulator.getBTB().setBranchResult(branchPC, isBranchTaken); //train the BTB with branch data?*/
+        stations[station] = null;
+        rob.buff[tag].setWriteValue(branchPC + 4); //writeValue is used for JAL and JALR
         rob.buff[tag].complete = true;
 
         return 0;
