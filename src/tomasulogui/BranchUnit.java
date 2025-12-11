@@ -30,10 +30,10 @@ public class BranchUnit
             case JAL, JALR, J, JR -> isBranchTaken = true;
         }
 
-        /*if (isBranchTaken != stations[station].isPredictedTaken()) {
-            simulator.squashAllInsts();
-            return 1;
-        }*/
+//        if (isBranchTaken != stations[station].isPredictedTaken()) {
+//            simulator.squashAllInsts();
+//            return 1;
+//        }
 
         int tag = stations[station].getDestTag();
         ReorderBuffer rob = simulator.getROB();
@@ -56,6 +56,7 @@ public class BranchUnit
                 stations[station].getFunction() == IssuedInst.INST_TYPE.BGTZ ||
                 stations[station].getFunction() == IssuedInst.INST_TYPE.BNE)) {
             simulator.setPC(rob.buff[tag].branchPredictedTarget);
+            simulator.squashAllInsts();
         }
 
         simulator.getBTB().setBranchResult(branchPC, isBranchTaken); //train the BTB with branch data?*/

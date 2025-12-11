@@ -36,6 +36,13 @@ public class ReorderBuffer {
     return numRetirees;
   }
 
+  public void squashAll() {
+      for(int i = 0; i < 30; i++) {
+          buff[i] = null;
+      }
+      frontQ = 0;
+      rearQ = 0;
+  }
   public boolean retireInst() {
     // 3 cases
     // 1. regular reg dest inst
