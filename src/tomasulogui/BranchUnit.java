@@ -49,15 +49,6 @@ public class BranchUnit
             }
         }
 
-        if (isBranchTaken && (stations[station].getFunction() == IssuedInst.INST_TYPE.BEQ ||
-                stations[station].getFunction() == IssuedInst.INST_TYPE.BGEZ ||
-                stations[station].getFunction() == IssuedInst.INST_TYPE.BLEZ ||
-                stations[station].getFunction() == IssuedInst.INST_TYPE.BLTZ ||
-                stations[station].getFunction() == IssuedInst.INST_TYPE.BGTZ ||
-                stations[station].getFunction() == IssuedInst.INST_TYPE.BNE)) {
-            simulator.setPC(rob.buff[tag].branchPredictedTarget);
-        }
-
         simulator.getBTB().setBranchResult(branchPC, isBranchTaken); //train the BTB with branch data?*/
         stations[station] = null;
         rob.buff[tag].setWriteValue(branchPC + 4); //writeValue is used for JAL and JALR

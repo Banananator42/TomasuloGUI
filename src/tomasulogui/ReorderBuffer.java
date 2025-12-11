@@ -72,7 +72,7 @@ public class ReorderBuffer {
                   retiree.getOpcode() != IssuedInst.INST_TYPE.JR)) {
               simulator.squashAllInsts();
               shouldAdvance = false;
-              //simulator.setPC(retiree.branchPredictedTarget);
+              simulator.setPC(retiree.branchPredictedTarget);
           }
           if (retiree.getOpcode() == IssuedInst.INST_TYPE.STORE){
               int writeVal = retiree.getWriteValue();
