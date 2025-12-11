@@ -65,13 +65,21 @@ public class ReorderBuffer {
     // figure out how to retire it properly
 
       if (retiree.isComplete() || retiree.getOpcode() == IssuedInst.INST_TYPE.STORE) {
-          if(isOpcodeBranch(retiree.getOpcode()) && (retiree.predictTaken || retiree.mispredicted) &&
+          if(isOpcodeBranch(retiree.getOpcode()) && retiree.mispredicted &&
                   (retiree.getOpcode() != IssuedInst.INST_TYPE.JAL &&
                   retiree.getOpcode() != IssuedInst.INST_TYPE.J &&
                   retiree.getOpcode() != IssuedInst.INST_TYPE.JR)) {
+              //only squash if mispredicted
               simulator.squashAllInsts();
               shouldAdvance = false;
-              simulator.setPC(retiree.branchPredictedTarget);
+
+              //Correct the missed predications
+              if (retiree.predictTaken) {
+                  simulator.setPC(retiree.instPC + 4);
+              }
+              else {
+                  simulator.setPC(retiree.branchPredictedTarget);
+              }
           }
           if (retiree.getOpcode() == IssuedInst.INST_TYPE.STORE){
               int writeVal = retiree.getWriteValue();
@@ -83,22 +91,12 @@ public class ReorderBuffer {
           else if (!isOpcodeBranch(retiree.getOpcode()) && retiree.getOpcode() != IssuedInst.INST_TYPE.NOP) {
               int wbReg = retiree.getWriteReg();
               int wbVal = retiree.getWriteValue();
-              int newTag = -1;
-              int end = rearQ;
-              if (end < frontQ) {
-                  end = end + 30;
-              }
-              for (int i = frontQ + 1; i < end; i++) {
-                  if (buff[i % 30].writeReg == wbReg) {
-                      newTag = i % 30;
-                      break;
-                  }
-              }
-              setTagForReg(wbReg, newTag);
+              updateTagFromRetire(wbReg);
               regs.setReg(wbReg, wbVal);
           }
           if(retiree.getOpcode() == IssuedInst.INST_TYPE.JAL || retiree.getOpcode() == IssuedInst.INST_TYPE.JALR ) {
               int wbVal = retiree.getWriteValue();
+              updateTagFromRetire(31);
               regs.setReg(31, wbVal);
           }
       }
@@ -114,6 +112,22 @@ public class ReorderBuffer {
       }
 
     return false;
+  }
+
+  private void updateTagFromRetire(int wbReg) {
+      //This will set it to either -1 or the next tag referencing the reg
+      int newTag = -1;
+      int end = rearQ;
+      if (end < frontQ) {
+          end = end + 30;
+      }
+      for (int i = frontQ + 1; i < end; i++) {
+          if (buff[i % 30].writeReg == wbReg) {
+              newTag = i % 30;
+              break;
+          }
+      }
+      setTagForReg(wbReg, newTag);
   }
 
   private boolean isOpcodeBranch(IssuedInst.INST_TYPE opcode) {
